@@ -36,8 +36,7 @@ RUN php artisan migrate --force
 COPY laravel.conf /etc/apache2/sites-available/laravel.conf
 RUN a2dissite 000-default.conf && a2ensite laravel.conf
 
-# Genera la clave de la app (usa env en tiempo de ejecución si prefieres)
-RUN php artisan key:generate
+
 # Cache de configuración y rutas
 RUN php artisan config:cache && \
     php artisan route:cache && \
