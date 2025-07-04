@@ -42,6 +42,7 @@ RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
+RUN php artisan storage:link && chmod -R 755 storage && chmod -R 755 $(readlink public/storage)"
     
 EXPOSE 80
 CMD ["apache2-foreground"]
