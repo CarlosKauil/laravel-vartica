@@ -4,18 +4,17 @@ FROM php:8.2-apache
 RUN a2enmod rewrite headers proxy_http
 
 # Instala dependencias necesarias, incluyendo libpq-dev para PostgreSQL
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     wget gnupg git unzip zip \
     libzip-dev libxslt-dev libpng-dev libjpeg-dev \
     libgmp-dev libfreetype6-dev libonig-dev \
-    libpq-dev default-libmysqlclient-dev
-
+    libpq-dev  # ← NECESARIO para pdo_pgsql
 
 # Configura e instala extensiones PHP necesarias, solo pdo_pgsql
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install \
     gd bcmath gmp zip xsl mbstring exif \
-    pdo_pgsql pdo_mysql # ← Solo PostgreSQL
+    pdo_pgsql  # ← Solo PostgreSQL
 
 # Instala Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -31,7 +30,7 @@ RUN composer install --no-interaction --optimize-autoloader
 # Ajusta permisos (opcional pero recomendable)
 RUN chown -R www-data:www-data /var/www/Backend/storage /var/www/Backend/bootstrap/cache
 
-RUN php artisan migrate --force
+RUN php artisan migrate --forec
 
 # Configura Apache para Laravel
 COPY laravel.conf /etc/apache2/sites-available/laravel.conf
