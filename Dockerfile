@@ -36,12 +36,13 @@ RUN php artisan migrate --force
 COPY laravel.conf /etc/apache2/sites-available/laravel.conf
 RUN a2dissite 000-default.conf && a2ensite laravel.conf
 
-# Instala y configura Xdebug (opcional, solo si haces debug local)
-RUN pecl install xdebug-3.3.2 && docker-php-ext-enable xdebug
-RUN echo 'xdebug.mode=debug' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
- && echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
- && echo 'xdebug.client_port=9003' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
- && echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# Genera la clave de la app (usa env en tiempo de ejecución si prefieres)
+RUN php artisan key:generate
+# Cache de configuración y rutas
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
+    
 EXPOSE 80
 CMD ["apache2-foreground"]
