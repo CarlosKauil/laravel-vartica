@@ -4,11 +4,12 @@ FROM php:8.2-apache
 RUN a2enmod rewrite headers proxy_http
 
 # Instala dependencias necesarias, incluyendo libpq-dev para PostgreSQL
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
     wget gnupg git unzip zip \
     libzip-dev libxslt-dev libpng-dev libjpeg-dev \
     libgmp-dev libfreetype6-dev libonig-dev \
-    libpq-dev libmysqlclient-dev default-mysql-client # ← NECESARIO para pdo_pgsql
+    libpq-dev default-libmysqlclient-dev
+
 
 # Configura e instala extensiones PHP necesarias, solo pdo_pgsql
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
