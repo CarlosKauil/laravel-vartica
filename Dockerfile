@@ -30,6 +30,8 @@ RUN composer install --no-interaction --optimize-autoloader
 # Ajusta permisos (opcional pero recomendable)
 RUN chown -R www-data:www-data /var/www/Backend/storage /var/www/Backend/bootstrap/cache
 
+RUN php artisan migrate --force
+
 # Configura Apache para Laravel
 COPY laravel.conf /etc/apache2/sites-available/laravel.conf
 RUN a2dissite 000-default.conf && a2ensite laravel.conf
